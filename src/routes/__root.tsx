@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Piezo Flow" },
+      { name: "description", content: "PiezoFlow AI Dashboard visualizes an AI traffic management system powered by piezoelectric road sensors." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Piezo Flow" },
+      { property: "og:description", content: "PiezoFlow AI Dashboard visualizes an AI traffic management system powered by piezoelectric road sensors." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Piezo Flow" },
+      { name: "twitter:description", content: "PiezoFlow AI Dashboard visualizes an AI traffic management system powered by piezoelectric road sensors." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7b04d645-8ade-4011-a257-adad5551f19b/id-preview-3739e826--95b3b1e5-e445-4e57-a8c3-a29c7618f802.lovable.app-1779390598068.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7b04d645-8ade-4011-a257-adad5551f19b/id-preview-3739e826--95b3b1e5-e445-4e57-a8c3-a29c7618f802.lovable.app-1779390598068.png" },
     ],
     links: [
       {
