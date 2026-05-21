@@ -1,27 +1,34 @@
-import { Zap, Gauge, Network, BatteryCharging } from "lucide-react";
+import { Zap, Gauge, Network, BatteryCharging, Layers } from "lucide-react";
 
 const steps = [
   {
+    icon: Layers,
+    title: "Dual-Flow Continuous Piezo Pavement",
+    desc: "Thousands of small circular piezo plates pave both Southbound and Northbound platforms — a seamless, high-density sensing surface across every lane.",
+    accent: true,
+  },
+  {
     icon: Zap,
     title: "Kinetic Impact",
-    desc: "Vehicle tires press the first piezoelectric plate, instantly generating a power pulse and timestamped signal.",
+    desc: "Vehicle tires press the circular plates, instantly generating a power pulse and microsecond-timestamped signal per direction.",
   },
   {
     icon: Gauge,
     title: "Δt Speed Calculation",
-    desc: "An embedded edge AI model measures the microsecond delay between plate 1 and plate 2 to compute exact velocity.",
+    desc: "An embedded edge AI model measures the microsecond delay between successive plates to compute exact velocity per lane and per flow.",
   },
   {
     icon: Network,
     title: "Density & Lane Analytics",
-    desc: "Aggregated readings identify bottlenecks per lane and optimize downstream traffic light timings in real-time.",
+    desc: "Aggregated readings separate Northbound (cyan) and Southbound (magenta) flows, identifying bottlenecks per platform in real-time.",
   },
   {
     icon: BatteryCharging,
     title: "100% Self-Sustained",
-    desc: "Harvested kinetic energy powers the sensors and on-site AI processing unit — zero grid dependency.",
+    desc: "Harvested kinetic energy from both directions powers the sensors and on-site AI processing — zero grid dependency.",
   },
 ];
+
 
 export function HowItWorks() {
   return (
