@@ -15,6 +15,7 @@ export function SiteHeader() {
           </a>
           <div className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
             <a href="#dashboard" className="hover:text-foreground transition">Dashboard</a>
+            <a href="#durability" className="hover:text-foreground transition">Durability</a>
             <a href="#how" className="hover:text-foreground transition">How it works</a>
             <a href="#dashboard" className="text-primary hover:text-primary/80 transition">Live Demo →</a>
           </div>
