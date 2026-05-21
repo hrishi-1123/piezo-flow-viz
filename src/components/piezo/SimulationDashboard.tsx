@@ -20,26 +20,59 @@ export function SimulationDashboard() {
   const [counts, setCounts] = useState<[number, number, number]>([0, 0, 0]);
   const [energy, setEnergy] = useState(0);
   const [events, setEvents] = useState<SpeedEvent[]>([]);
-  const [spikeLane, setSpikeLane] = useState<number | null>(null);
+  const [spikeLanes, setSpikeLanes] = useState<Set<number>>(new Set());
+  const [rushHour, setRushHour] = useState(false);
   const nextId = useRef(100);
   const triggered = useRef<Set<string>>(new Set());
 
-  // Spawn vehicles
+  // Spawn vehicles — supports simultaneous multi-lane spikes
   useEffect(() => {
     if (!running) return;
-    const spawn = () => {
-      const lane = (spikeLane ?? Math.floor(Math.random() * 3)) as 0 | 1 | 2;
-      const speed = Math.round(35 + Math.random() * 50);
-      const id = ++nextId.current;
-      setVehicles((v) => [
-        ...v,
-        { id, lane, speed, progress: 0, vSpeed: 0.004 + speed / 18000 },
-      ]);
+    const activeSpikes = rushHour ? [0, 1, 2] : Array.from(spikeLanes);
+    const spawnBurst = () => {
+      const newOnes: Vehicle[] = [];
+      if (activeSpikes.length > 0) {
+        // simultaneously spawn one vehicle in each active spike lane
+        for (const lane of activeSpikes) {
+          const speed = Math.round(35 + Math.random() * 50);
+          const id = ++nextId.current;
+          newOnes.push({
+            id,
+            lane: lane as 0 | 1 | 2,
+            speed,
+            progress: 0,
+            vSpeed: 0.004 + speed / 18000,
+          });
+        }
+        // occasional extra random vehicle for organic feel
+        if (Math.random() < 0.4) {
+          const lane = Math.floor(Math.random() * 3) as 0 | 1 | 2;
+          const speed = Math.round(35 + Math.random() * 50);
+          newOnes.push({
+            id: ++nextId.current,
+            lane,
+            speed,
+            progress: 0,
+            vSpeed: 0.004 + speed / 18000,
+          });
+        }
+      } else {
+        const lane = Math.floor(Math.random() * 3) as 0 | 1 | 2;
+        const speed = Math.round(35 + Math.random() * 50);
+        newOnes.push({
+          id: ++nextId.current,
+          lane,
+          speed,
+          progress: 0,
+          vSpeed: 0.004 + speed / 18000,
+        });
+      }
+      setVehicles((v) => [...v, ...newOnes]);
     };
-    const baseInterval = spikeLane !== null ? 350 : 1100;
-    const t = setInterval(spawn, baseInterval + Math.random() * 400);
+    const baseInterval = rushHour ? 280 : activeSpikes.length > 0 ? 380 : 1100;
+    const t = setInterval(spawnBurst, baseInterval + Math.random() * 250);
     return () => clearInterval(t);
-  }, [running, spikeLane]);
+  }, [running, spikeLanes, rushHour]);
 
   // Animate
   useEffect(() => {
