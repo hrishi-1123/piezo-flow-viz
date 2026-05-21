@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Activity, Zap, Gauge, Car, Play, Pause, AlertTriangle } from "lucide-react";
+import { Activity, Zap, Gauge, Car, Play, Pause, AlertTriangle, Flame, Shuffle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Vehicle = {
@@ -20,26 +20,59 @@ export function SimulationDashboard() {
   const [counts, setCounts] = useState<[number, number, number]>([0, 0, 0]);
   const [energy, setEnergy] = useState(0);
   const [events, setEvents] = useState<SpeedEvent[]>([]);
-  const [spikeLane, setSpikeLane] = useState<number | null>(null);
+  const [spikeLanes, setSpikeLanes] = useState<Set<number>>(new Set());
+  const [rushHour, setRushHour] = useState(false);
   const nextId = useRef(100);
   const triggered = useRef<Set<string>>(new Set());
 
-  // Spawn vehicles
+  // Spawn vehicles — supports simultaneous multi-lane spikes
   useEffect(() => {
     if (!running) return;
-    const spawn = () => {
-      const lane = (spikeLane ?? Math.floor(Math.random() * 3)) as 0 | 1 | 2;
-      const speed = Math.round(35 + Math.random() * 50);
-      const id = ++nextId.current;
-      setVehicles((v) => [
-        ...v,
-        { id, lane, speed, progress: 0, vSpeed: 0.004 + speed / 18000 },
-      ]);
+    const activeSpikes = rushHour ? [0, 1, 2] : Array.from(spikeLanes);
+    const spawnBurst = () => {
+      const newOnes: Vehicle[] = [];
+      if (activeSpikes.length > 0) {
+        // simultaneously spawn one vehicle in each active spike lane
+        for (const lane of activeSpikes) {
+          const speed = Math.round(35 + Math.random() * 50);
+          const id = ++nextId.current;
+          newOnes.push({
+            id,
+            lane: lane as 0 | 1 | 2,
+            speed,
+            progress: 0,
+            vSpeed: 0.004 + speed / 18000,
+          });
+        }
+        // occasional extra random vehicle for organic feel
+        if (Math.random() < 0.4) {
+          const lane = Math.floor(Math.random() * 3) as 0 | 1 | 2;
+          const speed = Math.round(35 + Math.random() * 50);
+          newOnes.push({
+            id: ++nextId.current,
+            lane,
+            speed,
+            progress: 0,
+            vSpeed: 0.004 + speed / 18000,
+          });
+        }
+      } else {
+        const lane = Math.floor(Math.random() * 3) as 0 | 1 | 2;
+        const speed = Math.round(35 + Math.random() * 50);
+        newOnes.push({
+          id: ++nextId.current,
+          lane,
+          speed,
+          progress: 0,
+          vSpeed: 0.004 + speed / 18000,
+        });
+      }
+      setVehicles((v) => [...v, ...newOnes]);
     };
-    const baseInterval = spikeLane !== null ? 350 : 1100;
-    const t = setInterval(spawn, baseInterval + Math.random() * 400);
+    const baseInterval = rushHour ? 280 : activeSpikes.length > 0 ? 380 : 1100;
+    const t = setInterval(spawnBurst, baseInterval + Math.random() * 250);
     return () => clearInterval(t);
-  }, [running, spikeLane]);
+  }, [running, spikeLanes, rushHour]);
 
   // Animate
   useEffect(() => {
@@ -95,9 +128,25 @@ export function SimulationDashboard() {
   const total = counts[0] + counts[1] + counts[2] || 1;
   const congestedLane = counts.indexOf(Math.max(...counts));
 
-  const triggerSpike = (lane: number) => {
-    setSpikeLane(lane);
-    setTimeout(() => setSpikeLane(null), 4000);
+  const toggleSpike = (lane: number) => {
+    setSpikeLanes((prev) => {
+      const next = new Set(prev);
+      if (next.has(lane)) next.delete(lane);
+      else next.add(lane);
+      return next;
+    });
+  };
+
+  const triggerRushHour = () => {
+    setRushHour(true);
+    setTimeout(() => setRushHour(false), 6000);
+  };
+
+  const triggerRandomMulti = () => {
+    // pick 2 random lanes to spike simultaneously
+    const lanes = [0, 1, 2].sort(() => Math.random() - 0.5).slice(0, 2);
+    setSpikeLanes(new Set(lanes));
+    setTimeout(() => setSpikeLanes(new Set()), 4000);
   };
 
   return (
@@ -145,18 +194,50 @@ export function SimulationDashboard() {
             ))}
           </div>
 
-          <div className="mt-5 grid grid-cols-3 gap-2">
-            {[0, 1, 2].map((l) => (
+          <div className="mt-5 space-y-2">
+            <div className="grid grid-cols-3 gap-2">
+              {[0, 1, 2].map((l) => {
+                const active = spikeLanes.has(l) || rushHour;
+                return (
+                  <Button
+                    key={l}
+                    size="sm"
+                    variant="outline"
+                    onClick={() => toggleSpike(l)}
+                    aria-pressed={active}
+                    className={`border-primary/40 hover:border-primary hover:bg-primary/10 ${
+                      active ? "bg-primary/15 border-primary text-primary" : ""
+                    }`}
+                  >
+                    <Car className="h-4 w-4 mr-1" /> Spike {LANE_NAMES[l]}
+                  </Button>
+                );
+              })}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
               <Button
-                key={l}
+                size="sm"
+                onClick={triggerRushHour}
+                aria-pressed={rushHour}
+                className={`gap-2 ${
+                  rushHour
+                    ? "bg-primary text-primary-foreground shadow-neon"
+                    : "bg-primary/90 text-primary-foreground hover:bg-primary"
+                }`}
+              >
+                <Flame className="h-4 w-4" />
+                {rushHour ? "Rush Hour Active…" : "Simulate Rush Hour"}
+              </Button>
+              <Button
                 size="sm"
                 variant="outline"
-                onClick={() => triggerSpike(l)}
-                className="border-primary/40 hover:border-primary hover:bg-primary/10"
+                onClick={triggerRandomMulti}
+                className="gap-2 border-primary/40 hover:border-primary hover:bg-primary/10"
               >
-                <Car className="h-4 w-4 mr-1" /> Spike {LANE_NAMES[l]}
+                <Shuffle className="h-4 w-4" />
+                Random Multi-Lane Burst
               </Button>
-            ))}
+            </div>
           </div>
         </div>
 
