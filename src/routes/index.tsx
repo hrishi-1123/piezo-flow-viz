@@ -1,26 +1,38 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Hero } from "@/components/piezo/Hero";
+import { SimulationDashboard } from "@/components/piezo/SimulationDashboard";
+import { HowItWorks } from "@/components/piezo/HowItWorks";
+import { SiteHeader, SiteFooter } from "@/components/piezo/SiteChrome";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "PiezoFlow AI — Self-Powered, AI-Driven Smart Traffic Management" },
+      {
+        name: "description",
+        content:
+          "PiezoFlow AI uses piezoelectric road sensors and edge AI to measure vehicle speed in microseconds, detect lane congestion, and harvest kinetic energy — all in real time.",
+      },
+      { property: "og:title", content: "PiezoFlow AI — Smart Traffic, Powered by the Road" },
+      {
+        property: "og:description",
+        content: "Energy harvesting + high-precision AI traffic analytics from piezoelectric plates.",
+      },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
+function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen">
+      <SiteHeader />
+      <main>
+        <Hero />
+        <SimulationDashboard />
+        <HowItWorks />
+      </main>
+      <SiteFooter />
     </div>
   );
-}
-
-function Index() {
-  return <PlaceholderIndex />;
 }
