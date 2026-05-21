@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Hero } from "@/components/piezo/Hero";
 import { SimulationDashboard } from "@/components/piezo/SimulationDashboard";
 import { HowItWorks } from "@/components/piezo/HowItWorks";
+import { Durability } from "@/components/piezo/Durability";
 import { SiteHeader, SiteFooter } from "@/components/piezo/SiteChrome";
 
 export const Route = createFileRoute("/")({
