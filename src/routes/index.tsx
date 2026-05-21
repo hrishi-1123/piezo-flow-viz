@@ -31,6 +31,7 @@ function Index() {
       <main>
         <Hero />
         <SimulationDashboard />
+        <Durability />
         <HowItWorks />
       </main>
       <SiteFooter />
