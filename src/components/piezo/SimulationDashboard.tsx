@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Activity, Zap, Gauge, Car, Play, Pause, AlertTriangle } from "lucide-react";
+import { Activity, Zap, Gauge, Car, Play, Pause, AlertTriangle, Flame, Shuffle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Vehicle = {
