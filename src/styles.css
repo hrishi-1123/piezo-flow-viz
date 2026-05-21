@@ -152,3 +152,38 @@
 }
 
 .animate-pulse-neon { animation: pulse-neon 2s ease-in-out infinite; }
+
+@keyframes tile-pulse-mag {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.72 0.28 340 / 0); }
+  50% { box-shadow: 0 0 14px 3px oklch(0.72 0.28 340 / 0.7); }
+}
+@keyframes tile-pulse-cyan {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.82 0.18 200 / 0); }
+  50% { box-shadow: 0 0 14px 3px oklch(0.82 0.18 200 / 0.7); }
+}
+
+.piezo-pavement {
+  background-color: oklch(0.16 0.02 250);
+  background-image:
+    radial-gradient(circle, oklch(0.55 0.06 250 / 0.55) 1.4px, transparent 1.8px),
+    radial-gradient(circle, oklch(0.4 0.04 250 / 0.35) 1px, transparent 1.4px);
+  background-size: 10px 10px, 10px 10px;
+  background-position: 0 0, 5px 5px;
+}
+.piezo-pavement-mag {
+  background-color: oklch(0.18 0.04 340);
+  background-image:
+    radial-gradient(circle, oklch(0.72 0.28 340 / 0.45) 1.4px, transparent 1.8px),
+    radial-gradient(circle, oklch(0.5 0.15 340 / 0.3) 1px, transparent 1.4px);
+  background-size: 10px 10px, 10px 10px;
+  background-position: 0 0, 5px 5px;
+}
+.piezo-pavement-cyan {
+  background-color: oklch(0.18 0.04 200);
+  background-image:
+    radial-gradient(circle, oklch(0.82 0.18 200 / 0.45) 1.4px, transparent 1.8px),
+    radial-gradient(circle, oklch(0.5 0.12 200 / 0.3) 1px, transparent 1.4px);
+  background-size: 10px 10px, 10px 10px;
+  background-position: 0 0, 5px 5px;
+}
+
