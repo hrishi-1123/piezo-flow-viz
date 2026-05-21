@@ -194,18 +194,50 @@ export function SimulationDashboard() {
             ))}
           </div>
 
-          <div className="mt-5 grid grid-cols-3 gap-2">
-            {[0, 1, 2].map((l) => (
+          <div className="mt-5 space-y-2">
+            <div className="grid grid-cols-3 gap-2">
+              {[0, 1, 2].map((l) => {
+                const active = spikeLanes.has(l) || rushHour;
+                return (
+                  <Button
+                    key={l}
+                    size="sm"
+                    variant="outline"
+                    onClick={() => toggleSpike(l)}
+                    aria-pressed={active}
+                    className={`border-primary/40 hover:border-primary hover:bg-primary/10 ${
+                      active ? "bg-primary/15 border-primary text-primary" : ""
+                    }`}
+                  >
+                    <Car className="h-4 w-4 mr-1" /> Spike {LANE_NAMES[l]}
+                  </Button>
+                );
+              })}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
               <Button
-                key={l}
+                size="sm"
+                onClick={triggerRushHour}
+                aria-pressed={rushHour}
+                className={`gap-2 ${
+                  rushHour
+                    ? "bg-primary text-primary-foreground shadow-neon"
+                    : "bg-primary/90 text-primary-foreground hover:bg-primary"
+                }`}
+              >
+                <Flame className="h-4 w-4" />
+                {rushHour ? "Rush Hour Active…" : "Simulate Rush Hour"}
+              </Button>
+              <Button
                 size="sm"
                 variant="outline"
-                onClick={() => triggerSpike(l)}
-                className="border-primary/40 hover:border-primary hover:bg-primary/10"
+                onClick={triggerRandomMulti}
+                className="gap-2 border-primary/40 hover:border-primary hover:bg-primary/10"
               >
-                <Car className="h-4 w-4 mr-1" /> Spike {LANE_NAMES[l]}
+                <Shuffle className="h-4 w-4" />
+                Random Multi-Lane Burst
               </Button>
-            ))}
+            </div>
           </div>
         </div>
 
