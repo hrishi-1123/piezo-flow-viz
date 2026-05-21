@@ -128,9 +128,25 @@ export function SimulationDashboard() {
   const total = counts[0] + counts[1] + counts[2] || 1;
   const congestedLane = counts.indexOf(Math.max(...counts));
 
-  const triggerSpike = (lane: number) => {
-    setSpikeLane(lane);
-    setTimeout(() => setSpikeLane(null), 4000);
+  const toggleSpike = (lane: number) => {
+    setSpikeLanes((prev) => {
+      const next = new Set(prev);
+      if (next.has(lane)) next.delete(lane);
+      else next.add(lane);
+      return next;
+    });
+  };
+
+  const triggerRushHour = () => {
+    setRushHour(true);
+    setTimeout(() => setRushHour(false), 6000);
+  };
+
+  const triggerRandomMulti = () => {
+    // pick 2 random lanes to spike simultaneously
+    const lanes = [0, 1, 2].sort(() => Math.random() - 0.5).slice(0, 2);
+    setSpikeLanes(new Set(lanes));
+    setTimeout(() => setSpikeLanes(new Set()), 4000);
   };
 
   return (
